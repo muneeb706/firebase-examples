@@ -110,9 +110,8 @@ class TodoClient:
         Return task names matching the given status.
         Returns a list of task names if successful, otherwise returns the error in Dictionary.
         """
-        params: Dict[str, str] = {"orderBy": '".value"', "equalTo": f'"{status}"'}
         response: requests.Response = requests.get(
-            f"{self.dburl}tasks.json", params=params
+            self.dburl + f'tasks.json?orderBy="$value"&equalTo="{status}"'
         )
 
         if response.status_code == 200:
@@ -148,3 +147,9 @@ class TodoClient:
             data: Optional[TasksDict] = response.json()
             return data if data is not None else {}
         return None  # Indicate an error occurred
+
+
+if __name__ == "__main__":
+    # Example usage (replace with your actual Firebase Realtime Database URL)
+    todo = TodoClient("https://<your-database-name>.firebaseio.com/")
+    print(todo.get_task_by_status("pending"))
